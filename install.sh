@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 set -eu
-# 发布时替换仓库标记；本地验证可通过环境变量指定分发仓库或下载地址。
+# The repository marker is replaced at release time; set the env vars below to override the distribution repository or download URL for local verification.
 repository=${STATIONOS_CLI_REPO:-StationPC-Technology/stationospro-cli}
 version=${STATIONOS_CLI_VERSION:-latest}
 install_dir=${STATIONOS_CLI_INSTALL_DIR:-"$HOME/.local/bin"}
@@ -13,12 +13,12 @@ while [ "$#" -gt 0 ]; do
 done
 case "$skill_client" in ""|cursor|claude|codex) ;; *) echo "Unsupported skill client" >&2; exit 1 ;; esac
 case "$repository" in */*) ;; *) echo "Set STATIONOS_CLI_REPO to owner/repository" >&2; exit 1 ;; esac
-if [ "$repository" = StationPC-Technology/stationospro-cli ]; then echo "This installer has not been configured for a distribution repository" >&2; exit 1; fi
+if [ "$repository" = __GITHUB_REPOSITORY__ ]; then echo "This installer has not been configured for a distribution repository" >&2; exit 1; fi
 case "$(uname -s)" in Linux) target_os=linux ;; Darwin) target_os=darwin ;; *) echo "Unsupported OS; use install.ps1 on Windows" >&2; exit 1 ;; esac
 case "$(uname -m)" in x86_64|amd64) target_arch=amd64 ;; aarch64|arm64) target_arch=arm64 ;; *) echo "Unsupported architecture" >&2; exit 1 ;; esac
 command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 1; }
 if [ "$version" = latest ]; then
-  # 从 GitHub 重定向解析发布标签，不依赖 jq 或 Node.js。
+  # Resolve the latest release tag from the GitHub redirect, without requiring jq or Node.js.
   release_url=$(curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/$repository/releases/latest")
   tag=${release_url##*/}
 else
@@ -39,7 +39,7 @@ elif command -v shasum >/dev/null 2>&1; then actual=$(shasum -a 256 "$temp_dir/$
 else echo "sha256sum or shasum is required" >&2; exit 1; fi
 [ "$actual" = "$expected" ] || { echo "Checksum mismatch; existing CLI was not changed" >&2; exit 1; }
 mkdir -p "$install_dir"
-# 在目标目录中准备文件，再替换可执行文件，失败时保留原安装。
+# Stage the file next to the target, then swap the executable in atomically; a failed install keeps the previous one.
 install_temp=$(mktemp "$install_dir/.stationos-cli-XXXXXX")
 trap 'rm -rf "$temp_dir"; rm -f "$install_temp"' EXIT HUP INT TERM
 cp "$temp_dir/$name" "$install_temp"

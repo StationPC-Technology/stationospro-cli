@@ -5,7 +5,7 @@ param(
     [ValidateSet("", "cursor", "claude", "codex")][string]$WithSkill = ""
 )
 $ErrorActionPreference = "Stop"
-if ($Repository -eq "StationPC-Technology/stationospro-cli" -or $Repository -notmatch '^[\w.-]+/[\w.-]+$') {
+if ($Repository -eq "__GITHUB_REPOSITORY__" -or $Repository -notmatch '^[\w.-]+/[\w.-]+$') {
     throw "Specify the distribution repository with -Repository owner/repository"
 }
 if ($env:PROCESSOR_ARCHITECTURE -ne "AMD64") { throw "Only Windows x64 is currently supported" }
