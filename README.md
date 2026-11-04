@@ -36,7 +36,7 @@ stationos-cli auth login --server https://<NAS_ADDRESS>:9501
 stationos-cli auth status
 ```
 
-- `--server` is your NAS web address (HTTPS recommended; plain HTTP works on a trusted LAN only). Do not append `/mcp`.
+- `--server` is your NAS web address (HTTPS recommended; plain HTTP works on a trusted LAN only). Use the gateway address as-is.
 - Optionally pre-select modules with `--scope` (comma-separated, e.g. `--scope file:ro,file:rw,docker`, or `--scope all`). The final scope is what you confirm on the web consent page.
 - Plain-HTTP targets warn about on-network token visibility; prefer the HTTPS domain shown in the NAS web AI-access guide.
 
@@ -57,26 +57,26 @@ stationos-cli schema docker.container.create  # inspect a tool's arguments
 
 Destructive tools ask for confirmation before running (rerun with `--confirm`).
 
-## Use it as an MCP bridge (Codex / Cherry Studio / any MCP client)
+## Use it from your AI client
 
 After `auth login`, expose your NAS through the stdio bridge — tokens never enter the AI client's config:
 
-Cursor MCP configuration:
+Install the bundled skill for your AI client:
 
-```json
-{"mcpServers":{"stationos":{"command":"stationos-cli","args":["mcp"]}}}
+```bash
+stationos-cli skills install --client codex
 ```
 
 Claude Code:
 
 ```bash
-claude mcp add --transport stdio stationos -- stationos-cli mcp
+stationos-cli skills install --client claude
 ```
 
 Codex:
 
 ```bash
-codex mcp add nas -- stationos-cli mcp
+stationos-cli skills install --client codex
 ```
 
 All bridge clients on this machine share one authorization; revoking it on the NAS web disconnects them all at once.
