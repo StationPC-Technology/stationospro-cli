@@ -25,6 +25,16 @@ Invoke-WebRequest https://raw.githubusercontent.com/StationPC-Technology/station
 .\install.ps1
 ```
 
+npm (all supported platforms, no lifecycle scripts involved):
+
+```bash
+# one-shot: install + browser login + AI-client skill
+npx @stationos/cli setup --server https://<NAS_ADDRESS>:9501
+
+# or install globally
+npm install -g @stationos/cli
+```
+
 For older releases, set `STATIONOS_CLI_VERSION=0.1.0` on Linux/macOS or pass `-Version 0.1.0` on Windows. Downloads are checked against the release's SHA-256 checksums.
 
 ## Connect to your NAS
