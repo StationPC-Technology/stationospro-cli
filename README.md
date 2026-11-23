@@ -16,7 +16,7 @@ Optionally install the bundled NAS skill for your AI client:
 curl -fsSL https://raw.githubusercontent.com/StationPC-Technology/stationospro-cli/main/install.sh | sh -s -- --with-skill codex
 ```
 
-Use `cursor`, `claude`, or `codex`. The default executable directory is `~/.local/bin`; add it to PATH if needed.
+Use `cursor`, `claude`, `codex`, or `workbuddy`. The default executable directory is `~/.local/bin`; add it to PATH if needed.
 
 Windows PowerShell:
 
@@ -29,11 +29,16 @@ npm (all supported platforms, no lifecycle scripts involved):
 
 ```bash
 # one-shot: install + browser login + AI-client skill
-npx @stationos/cli setup --server https://<NAS_ADDRESS>:9501
+npx --yes @stationos/cli@latest setup --server https://<NAS_ADDRESS>:9501
 
 # or install globally
-npm install -g @stationos/cli
+npm install -g @stationos/cli@latest
 ```
+
+The skill ships inside the CLI, so an older binary installs an older skill.
+Always pin `@latest` (as above), or compare `stationos-cli --version` with
+`npm view @stationos/cli version` and upgrade before `setup` — a bare
+`npx @stationos/cli` may reuse a cached older copy.
 
 For older releases, set `STATIONOS_CLI_VERSION=0.1.0` on Linux/macOS or pass `-Version 0.1.0` on Windows. Downloads are checked against the release's SHA-256 checksums.
 
